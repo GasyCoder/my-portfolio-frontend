@@ -22,7 +22,3 @@ It connects to a **Laravel API backend** and allows visitors to browse my projec
 - **Axios** (API requests)
 - **TailwindCSS** _(optional, for styling)_
 - **Laravel API** (backend)
-
----
-
-## 📁 Project Structure
