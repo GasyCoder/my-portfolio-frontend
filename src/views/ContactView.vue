@@ -3,8 +3,12 @@
     <Header />
     <section class="mb-12">
       <div class="portfolio-container">
-        <h3 class="section-title">Contact</h3>
-        <p class="text-gray-600">This section will contain your contact form or information.</p>
+        <ContactSection />
+      </div>
+    </section>
+    <section class="mb-12">
+      <div class="portfolio-container">
+        <NewsletterSection />
       </div>
     </section>
     <Footer />
@@ -13,33 +17,17 @@
 
 <script>
 import Header from '../components/Header.vue'
+import ContactSection from '../components/ContactSection.vue'
+import NewsletterSection from '../components/NewsletterSection.vue'
 import Footer from '../components/Footer.vue'
 
 export default {
   name: 'ContactView',
   components: {
     Header,
+    ContactSection,
+    NewsletterSection,
     Footer,
   },
 }
 </script>
-
-<style scoped>
-.section-title {
-  position: relative;
-  display: inline-block;
-  font-weight: 700;
-  font-size: 24px;
-  color: #1f2937;
-  margin-bottom: 20px;
-}
-.section-title::after {
-  content: '';
-  position: absolute;
-  bottom: -6px;
-  left: 0;
-  width: 40px;
-  height: 4px;
-  background-color: #3b82f6;
-}
-</style>

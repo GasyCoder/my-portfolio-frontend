@@ -1,51 +1,12 @@
 <template>
   <section class="mb-12">
     <div class="portfolio-container">
-      <h3 class="section-title">Code</h3>
+      <h3 class="section-title">Open Source Work</h3>
 
-      <!-- Liste des projets -->
-      <div v-if="isLoading" class="py-8 text-center text-gray-400">
-        <svg
-          class="animate-spin h-8 w-8 mx-auto mb-2"
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-        >
-          <circle
-            class="opacity-25"
-            cx="12"
-            cy="12"
-            r="10"
-            stroke="currentColor"
-            stroke-width="4"
-          ></circle>
-          <path
-            class="opacity-75"
-            fill="currentColor"
-            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-          ></path>
-        </svg>
-        Chargement des projets...
-      </div>
-
-      <!-- Message d'erreur -->
-      <div v-else-if="error" class="py-8 text-center text-red-400">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          class="h-8 w-8 mx-auto mb-2"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
-          />
-        </svg>
-        {{ error }}
-      </div>
+      <!-- Utilisation du composant AppLoader -->
+      <AppLoader v-if="isLoading" message="Loading projects..." />
+      <!-- Utilisation du composant AppError -->
+      <AppError v-else-if="error" :message="error" />
 
       <!-- Grille de projets -->
       <div v-else class="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -154,9 +115,15 @@
 
 <script>
 import axios from 'axios'
+import AppLoader from '@/components/ui/AppLoader.vue'
+import AppError from '@/components/ui/AppError.vue'
 
 export default {
   name: 'CodeSection',
+  components: {
+    AppLoader,
+    AppError,
+  },
   data() {
     return {
       allProjects: [],
@@ -311,126 +278,3 @@ export default {
   },
 }
 </script>
-
-<style scoped>
-.card {
-  background-color: rgba(30, 41, 59, 0.5);
-  border: 1px solid rgba(75, 85, 99, 0.4);
-  border-radius: 0.75rem;
-  padding: 1.25rem;
-  box-shadow:
-    0 4px 6px -1px rgba(0, 0, 0, 0.1),
-    0 2px 4px -1px rgba(0, 0, 0, 0.06);
-  backdrop-filter: blur(10px);
-  transition: all 0.3s ease;
-}
-
-.card:hover {
-  transform: translateY(-5px);
-  border-color: rgba(75, 85, 99, 0.6);
-}
-
-/* Animation d'entrée */
-.fade-in-up {
-  animation: fadeInUp 0.6s ease-out forwards;
-  opacity: 0;
-}
-
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.section-title {
-  font-size: 1.75rem;
-  font-weight: 700;
-  margin-bottom: 1.5rem;
-  position: relative;
-  display: inline-block;
-  padding-bottom: 0.5rem;
-}
-
-.section-title::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 50%;
-  height: 3px;
-  background: linear-gradient(90deg, var(--laravel-red), transparent);
-  border-radius: 2px;
-}
-
-/* Styles spécifiques pour les badges de technologie de dépôt GitHub */
-.tech-badge {
-  border-radius: 0.375rem;
-  font-weight: 500;
-}
-
-.tech-badge.laravel-badge {
-  background-color: rgba(255, 45, 32, 0.15);
-  color: var(--laravel-red);
-  border: 1px solid rgba(255, 45, 32, 0.3);
-}
-
-.tech-badge.vue-badge {
-  background-color: rgba(65, 184, 131, 0.15);
-  color: var(--vue-green);
-  border: 1px solid rgba(65, 184, 131, 0.3);
-}
-
-.tech-badge.tailwind-badge {
-  background-color: rgba(56, 189, 248, 0.15);
-  color: var(--tailwind-blue);
-  border: 1px solid rgba(56, 189, 248, 0.3);
-}
-
-.btn {
-  border-radius: 0.375rem;
-  font-weight: 500;
-  padding: 0.5rem 1rem;
-  transition: all 0.3s ease;
-  border: 1px solid transparent;
-}
-
-.line-clamp-3 {
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-
-.text-tech-gradient {
-  background: linear-gradient(90deg, var(--laravel-red), var(--vue-green));
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  font-weight: 600;
-}
-
-:root {
-  --laravel-red: rgb(255, 45, 32);
-  --vue-green: rgb(65, 184, 131);
-  --tailwind-blue: rgb(56, 189, 248);
-}
-
-/* Animation pour le spinner */
-.animate-spin {
-  animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-</style>
