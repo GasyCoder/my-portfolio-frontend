@@ -1,0 +1,292 @@
+@import url('https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;600&family=Jost:wght@400;500&display=swap');
+@import 'tailwindcss';
+
+:root {
+  /* Polices de base */
+  --font-sans: Rubik, sans-serif;
+  --font-jost: Jost, sans-serif;
+  --font-weight-light: 300;
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-bold: 600;
+
+  /* Couleurs des technologies */
+  --vue-green: #41b883;
+  --vue-dark: #34495e;
+  --laravel-red: #ff2d20;
+  --laravel-dark: #292929;
+  --tailwind-blue: #38bdf8;
+  --tailwind-dark: #0f172a;
+
+  /* Palette de couleurs mixte */
+  --color-primary: var(--vue-green);
+  --color-secondary: var(--laravel-red);
+  --color-tertiary: var(--tailwind-blue);
+  --color-dark: var(--tailwind-dark);
+  --color-text-light: #f1f5f9;
+  --color-text-medium: #cbd5e1;
+  --color-card-bg: rgba(30, 41, 59, 0.8);
+  --color-card-border: rgba(71, 85, 105, 0.5);
+}
+
+html,
+body {
+  overflow-x: hidden;
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: var(--color-dark);
+  color: var(--color-text-medium);
+  letter-spacing: 0.01em;
+}
+
+/* Titre de section multi-tech */
+.section-title {
+  position: relative;
+  display: inline-block;
+  font-family: var(--font-jost);
+  font-weight: var(--font-weight-light);
+  font-size: 28px;
+  color: var(--color-text-light);
+  margin-bottom: 28px;
+  letter-spacing: 0.03em;
+  padding-left: 12px;
+}
+
+.section-title::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 4px;
+  background: linear-gradient(
+    to bottom,
+    var(--vue-green),
+    var(--laravel-red),
+    var(--tailwind-blue)
+  );
+  border-radius: 2px;
+}
+
+.section-title::after {
+  content: '';
+  position: absolute;
+  bottom: -8px;
+  left: 0;
+  width: 60px;
+  height: 2px;
+  background: linear-gradient(to right, var(--vue-green), var(--laravel-red), var(--tailwind-blue));
+  border-radius: 2px;
+  transition: width 0.3s ease-in-out;
+}
+
+.section-title:hover::after {
+  width: 100px;
+}
+
+/* Conteneur principal */
+.portfolio-container {
+  width: 100%;
+  max-width: 55rem !important;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 1.25rem;
+  padding-right: 1.25rem;
+}
+
+/* Animation d'apparition pour les cartes */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-in-up {
+  animation: fadeInUp 0.6s ease-out forwards;
+}
+
+/* Styles de carte fusion tech */
+.card {
+  background-color: var(--color-card-bg);
+  backdrop-filter: blur(8px);
+  border-radius: 0.75rem;
+  overflow: hidden;
+  border: 1px solid var(--color-card-border);
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
+  position: relative;
+}
+
+.card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(to right, var(--vue-green), var(--laravel-red), var(--tailwind-blue));
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow:
+    0 10px 15px -3px rgba(0, 0, 0, 0.2),
+    0 4px 6px -2px rgba(0, 0, 0, 0.1),
+    0 0 0 1px rgba(255, 255, 255, 0.05);
+}
+
+/* Tech badges */
+.tech-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: var(--font-weight-medium);
+  margin-right: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.vue-badge {
+  background-color: rgba(65, 184, 131, 0.15);
+  color: var(--vue-green);
+  border: 1px solid rgba(65, 184, 131, 0.3);
+}
+
+.laravel-badge {
+  background-color: rgba(255, 45, 32, 0.15);
+  color: var(--laravel-red);
+  border: 1px solid rgba(255, 45, 32, 0.3);
+}
+
+.tailwind-badge {
+  background-color: rgba(56, 189, 248, 0.15);
+  color: var(--tailwind-blue);
+  border: 1px solid rgba(56, 189, 248, 0.3);
+}
+
+.react-badge {
+  background-color: rgba(97, 218, 251, 0.15); /* Couleur React avec transparence */
+  color: #61dafb; /* Couleur principale React */
+  border: 1px solid rgba(97, 218, 251, 0.3); /* Bordure plus douce mais réactive */
+}
+
+/* Styles de bouton multi-tech */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.625rem 1.25rem;
+  background: rgba(15, 23, 42, 0.8);
+  color: var(--color-text-light);
+  font-weight: var(--font-weight-medium);
+  border-radius: 0.5rem;
+  transition: all 0.3s ease;
+  border: 1px solid transparent;
+  position: relative;
+  z-index: 1;
+  overflow: hidden;
+}
+
+.btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(to right, var(--vue-green), var(--laravel-red), var(--tailwind-blue));
+  z-index: -1;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.btn:hover::before {
+  opacity: 1;
+}
+
+.btn-vue {
+  border-color: var(--vue-green);
+}
+
+.btn-laravel {
+  border-color: var(--laravel-red);
+}
+
+.btn-tailwind {
+  border-color: var(--tailwind-blue);
+}
+
+.btn svg {
+  margin-left: 0.5rem;
+  transition: transform 0.2s ease;
+}
+
+.btn:hover svg {
+  transform: translateX(3px);
+}
+
+/* Utilitaires de couleur tech */
+.text-tech-gradient {
+  background: linear-gradient(to right, var(--vue-green), var(--laravel-red), var(--tailwind-blue));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  color: transparent;
+}
+
+.border-tech-gradient {
+  border-width: 2px;
+  border-style: solid;
+  border-image: linear-gradient(
+      to right,
+      var(--vue-green),
+      var(--laravel-red),
+      var(--tailwind-blue)
+    )
+    1;
+}
+
+/* Couleurs TailwindCSS personnalisées */
+.text-vue {
+  color: var(--vue-green);
+}
+
+.text-laravel {
+  color: var(--laravel-red);
+}
+
+.text-tailwind {
+  color: var(--tailwind-blue);
+}
+
+.bg-vue {
+  background-color: var(--vue-green);
+}
+
+.bg-laravel {
+  background-color: var(--laravel-red);
+}
+
+.bg-tailwind {
+  background-color: var(--tailwind-blue);
+}
+
+.border-vue {
+  border-color: var(--vue-green);
+}
+
+.border-laravel {
+  border-color: var(--laravel-red);
+}
+
+.border-tailwind {
+  border-color: var(--tailwind-blue);
+}
