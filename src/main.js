@@ -5,12 +5,16 @@ import { createPinia } from 'pinia'
 
 import App from './App.vue'
 import router from './router'
+import csrfService from './services/csrf' // Importez le service CSRF
 
-const app = createApp(App)
+// Récupérer un cookie CSRF au démarrage, puis initialiser l'application
+csrfService.getCsrfCookie().then(() => {
+  const app = createApp(App)
 
-app.config.devtools = false
+  app.config.devtools = false
 
-app.use(createPinia())
-app.use(router)
+  app.use(createPinia())
+  app.use(router)
 
-app.mount('#app')
+  app.mount('#app')
+})

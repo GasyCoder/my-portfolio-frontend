@@ -60,10 +60,34 @@
           <h2 class="text-xl sm:text-2xl font-bold mt-2 text-tech-gradient">Stay Up To Date</h2>
           <p class="mt-1 sm:mt-2 text-sm sm:text-base text-gray-300">Laravel, Vue & Tailwind CSS</p>
 
+          <!-- Message de succès -->
+          <div v-if="subscriptionSuccess" class="mt-4 sm:mt-6 animate-fade-in">
+            <div class="p-3 rounded-md bg-green-900/50 border border-green-500/30 text-green-300">
+              <div class="flex items-center">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-5 w-5 mr-2"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M5 13l4 4L19 7"
+                  />
+                </svg>
+                <p>{{ subscriptionMessage }}</p>
+              </div>
+            </div>
+          </div>
+
           <!-- Form avec gradient border - responsive pour mobile -->
-          <div class="mt-4 sm:mt-6 flex justify-center">
+          <div v-if="!subscriptionSuccess" class="mt-4 sm:mt-6 flex justify-center">
             <div
               class="p-0.5 rounded-md bg-gradient-to-r from-vue-green via-laravel-red to-tailwind-blue inline-flex w-full max-w-xs sm:max-w-md"
+              :class="{ 'opacity-75': isSubmitting }"
             >
               <div class="flex flex-col sm:flex-row w-full bg-gray-900 rounded-md">
                 <input
@@ -71,18 +95,53 @@
                   type="email"
                   placeholder="Email Address"
                   class="w-full bg-transparent text-white border-none focus:outline-none focus:ring-0 p-3 text-sm"
+                  :class="{ 'border-red-500 focus:border-red-500': validationError }"
+                  :disabled="isSubmitting"
+                  @keydown.enter="subscribe"
                 />
                 <button
                   @click="subscribe"
                   class="p-2 sm:p-3 text-white text-sm font-medium relative overflow-hidden"
+                  :disabled="isSubmitting"
                 >
-                  <span class="relative z-10 mr-3">Subscribe</span>
+                  <span v-if="!isSubmitting" class="relative z-10 mr-3">Subscribe</span>
+                  <span v-else class="relative z-10 mr-3 flex items-center">
+                    <svg
+                      class="animate-spin h-4 w-4 mr-1"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                    >
+                      <circle
+                        class="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        stroke-width="4"
+                      ></circle>
+                      <path
+                        class="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                      ></path>
+                    </svg>
+                    Submitting...
+                  </span>
                   <span
                     class="absolute inset-0 bg-gradient-to-r from-vue-green via-laravel-red to-tailwind-blue opacity-80"
                   ></span>
                 </button>
               </div>
             </div>
+          </div>
+
+          <!-- Message d'erreur -->
+          <div
+            v-if="validationError && !subscriptionSuccess"
+            class="mt-2 text-red-400 text-xs sm:text-sm"
+          >
+            {{ validationError }}
           </div>
 
           <p class="mt-3 sm:mt-4 text-gray-400 text-xs sm:text-sm max-w-md mx-auto">
@@ -116,34 +175,82 @@
           </div>
         </div>
       </div>
+
+      <!-- Notifications -->
+      <Notification
+        v-if="showNotification"
+        :type="notificationType"
+        :message="notificationMessage"
+        @close="closeNotification"
+      />
     </div>
   </section>
 </template>
 
 <script>
 import api from '../api'
-
+import Notification from '@/components/ui/Notification.vue'
 export default {
   name: 'NewsletterSection',
+  components: {
+    Notification,
+  },
   data() {
     return {
       email: '',
+      isSubmitting: false,
+      subscriptionSuccess: false,
+      subscriptionMessage: '',
+      validationError: '',
+
+      // Notification properties
+      showNotification: false,
+      notificationMessage: '',
+      notificationProgress: 100,
+      notificationTimer: null,
     }
   },
   methods: {
     async subscribe() {
+      this.validationError = ''
+
       if (!this.email || !this.isValidEmail(this.email)) {
-        alert('Please enter a valid email address')
+        this.validationError = 'Veuillez entrer une adresse email valide'
         return
       }
 
       try {
-        await api.post('/newsletter/subscribe', { email: this.email })
-        alert('Subscribed successfully!')
-        this.email = ''
+        this.isSubmitting = true
+
+        // Appel à l'API pour l'inscription
+        const response = await api.post('/newsletter/subscribe', { email: this.email })
+
+        if (response.data && response.data.success) {
+          // this.subscriptionSuccess = true
+          // this.subscriptionMessage =
+          //   response.data.message ||
+          //   'Vous êtes maintenant pré-inscrit à la newsletter ! Veuillez vérifier votre email pour confirmer votre inscription.'
+          this.email = ''
+
+          // Afficher une notification
+          this.showNotificationMessage(
+            'Un email de confirmation a été envoyé à votre adresse email.',
+          )
+        } else {
+          throw new Error('Réponse inattendue du serveur')
+        }
       } catch (error) {
         console.error("Erreur lors de l'inscription:", error)
-        alert('Failed to subscribe. Please try again.')
+
+        if (error.response && error.response.status === 422) {
+          this.validationError =
+            error.response.data.message || 'Cette adresse email est déjà inscrite ou invalide.'
+        } else {
+          this.validationError =
+            "Impossible de s'inscrire pour le moment. Veuillez réessayer ultérieurement."
+        }
+      } finally {
+        this.isSubmitting = false
       }
     },
 
@@ -151,6 +258,85 @@ export default {
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
       return emailRegex.test(email)
     },
+
+    // Notification methods
+    showNotificationMessage(message) {
+      // Clear any existing notification timer
+      if (this.notificationTimer) {
+        clearInterval(this.notificationTimer)
+        this.notificationTimer = null
+      }
+
+      // Set notification message and show
+      this.notificationMessage = message
+      this.showNotification = true
+      this.notificationProgress = 100
+
+      // Start the progress bar countdown
+      const duration = 4000 // 4 seconds
+      const updateFrequency = 100 // Update every 100ms
+      const decrement = 100 / (duration / updateFrequency)
+
+      this.notificationTimer = setInterval(() => {
+        this.notificationProgress -= decrement
+
+        if (this.notificationProgress <= 0) {
+          this.closeNotification()
+        }
+      }, updateFrequency)
+
+      // Auto close after duration
+      setTimeout(() => {
+        this.closeNotification()
+      }, duration)
+    },
+
+    closeNotification() {
+      this.showNotification = false
+
+      if (this.notificationTimer) {
+        clearInterval(this.notificationTimer)
+        this.notificationTimer = null
+      }
+    },
+  },
+  // Clean up any timers when component is destroyed
+  beforeUnmount() {
+    if (this.notificationTimer) {
+      clearInterval(this.notificationTimer)
+    }
   },
 }
 </script>
+
+<style scoped>
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.3s ease-out forwards;
+}
+
+.notification-enter-active,
+.notification-leave-active {
+  transition: all 0.3s ease;
+}
+
+.notification-enter-from {
+  opacity: 0;
+  transform: translateX(30px);
+}
+
+.notification-leave-to {
+  opacity: 0;
+  transform: translateX(100%);
+}
+</style>

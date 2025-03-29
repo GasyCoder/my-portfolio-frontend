@@ -1,0 +1,56 @@
+[
+  {
+    "id": 1,
+    "title": "Building Modern SPAs with Laravel and Vue.js",
+    "category": "LARAVEL",
+    "published_at": "2025-02-15",
+    "read_time": 3,
+    "content": "In this article, I explore the powerful combination of <strong>Laravel</strong> and <strong>Vue.js</strong> for building modern single-page applications. Learn how to leverage the best of both worlds for your next project.",
+    "slug": "building-modern-spas"
+  },
+  {
+    "id": 2,
+    "title": "Mastering Tailwind CSS: Advanced Techniques",
+    "category": "TAILWIND",
+    "published_at": "2025-01-10",
+    "read_time": 4,
+    "content": "Discover advanced techniques for getting the most out of <strong>Tailwind CSS</strong>. From custom configurations to optimizing your workflow, this guide covers everything you need to know.",
+    "slug": "mastering-tailwind-css"
+  },
+  {
+    "id": 3,
+    "title": "Vue 3 Composition API: A Practical Guide",
+    "category": "VUE",
+    "published_at": "2024-12-05",
+    "read_time": 5,
+    "content": "The <strong>Composition API</strong> is a game-changer for Vue developers. This comprehensive guide walks through real-world examples and best practices for structuring your Vue 3 applications.",
+    "slug": "vue-composition-api"
+  },
+  {
+    "id": 4,
+    "title": "Getting Started with TypeScript in Vue Projects",
+    "category": "TYPESCRIPT",
+    "published_at": "2024-11-20",
+    "read_time": 4,
+    "content": "<strong>TypeScript</strong> adds powerful type checking to your Vue projects. This tutorial guides you through setting up and using TypeScript effectively with Vue to create more robust applications.",
+    "slug": "typescript-in-vue"
+  },
+  {
+    "id": 5,
+    "title": "Modern PHP Features Every Developer Should Know",
+    "category": "PHP",
+    "published_at": "2024-10-15",
+    "read_time": 6,
+    "content": "PHP has evolved significantly over the years. Learn about modern <strong>PHP</strong> features like attributes, union types, and more that can help you write cleaner, more maintainable code.",
+    "slug": "modern-php-features"
+  },
+  {
+    "id": 6,
+    "title": "Optimizing JavaScript Performance in the Browser",
+    "category": "JAVASCRIPT",
+    "published_at": "2024-09-30",
+    "read_time": 7,
+    "content": "Performance matters! This comprehensive guide explains techniques for optimizing <strong>JavaScript</strong> performance in modern browsers, from efficient DOM manipulation to memory management.",
+    "slug": "javascript-performance"
+  }
+]

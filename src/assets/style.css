@@ -49,9 +49,10 @@ body {
   font-weight: var(--font-weight-light);
   font-size: 28px;
   color: var(--color-text-light);
-  margin-bottom: 28px;
+  margin-bottom: 0.5rem;
   letter-spacing: 0.03em;
   padding-left: 12px;
+  color: #e2e8f0;
 }
 
 .section-title::before {
@@ -84,6 +85,20 @@ body {
 
 .section-title:hover::after {
   width: 100px;
+}
+
+.featured-project {
+  border-left: 3px solid #eab308;
+}
+
+.project-item {
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.project-item:hover {
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }
 
 /* Conteneur principal */
@@ -158,6 +173,7 @@ body {
 /* Tech badges */
 .tech-badge {
   display: inline-flex;
+  transition: all 0.15s ease-in-out;
   align-items: center;
   padding: 0.25rem 0.75rem;
   border-radius: 9999px;
@@ -339,6 +355,23 @@ body {
   }
 }
 
+.tech-filter-btn {
+  border: 1px solid rgba(71, 85, 105, 0.2);
+  transition: all 0.2s ease;
+}
+
+.btn-action {
+  transition: all 0.15s ease;
+}
+
+.btn-action:hover {
+  transform: translateY(-1px);
+}
+
+.tech-filter-btn:hover {
+  transform: translateY(-1px);
+}
+
 .tech-badge:hover {
   transform: translateY(-1px);
 }
@@ -383,6 +416,24 @@ body {
   background-color: rgba(119, 123, 179, 0.15);
   color: #777bb3;
   border: 1px solid rgba(119, 123, 179, 0.3);
+}
+
+.php-badge {
+  background-color: rgba(119, 123, 179, 0.15);
+  color: #777bb3;
+  border: 1px solid rgba(119, 123, 179, 0.3);
+}
+
+.js-badge {
+  background-color: rgba(247, 223, 30, 0.15);
+  color: #f7df1e;
+  border: 1px solid rgba(247, 223, 30, 0.3);
+}
+
+.ts-badge {
+  background-color: rgba(49, 120, 198, 0.15);
+  color: #3178c6;
+  border: 1px solid rgba(49, 120, 198, 0.3);
 }
 
 /********* Styles for codeswork *******/
@@ -497,7 +548,6 @@ body {
   display: inline-block;
   padding-bottom: 0.5rem;
 }
-
 .section-title::after {
   content: '';
   position: absolute;
@@ -536,8 +586,22 @@ body {
   }
 }
 
+/* Animation du spinner */
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 .animate-spin-slow {
   animation: spin-slow 12s linear infinite;
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite;
 }
 
 /* Animation de gradient qui bouge */
@@ -640,10 +704,13 @@ body {
 /* Tech badges responsives */
 .tech-badge {
   font-size: 0.65rem;
-  padding: 0.15rem 0.5rem;
+  padding: 0.8rem;
   border-radius: 9999px;
   font-weight: 500;
   letter-spacing: 0.05em;
+  background-color: rgba(83, 146, 249, 0.2);
+  color: rgb(255, 255, 255);
+  border: 1px solid rgba(30, 41, 59, 0.3);
 }
 
 @media (min-width: 640px) {
@@ -656,6 +723,10 @@ body {
 @media (min-width: 768px) {
   .tech-badge {
     padding: 0.2rem 0.7rem;
+  }
+  .featured-project {
+    border-left: none;
+    border-top: 3px solid #eab308;
   }
 }
 

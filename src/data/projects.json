@@ -1,0 +1,36 @@
+[
+  {
+    "id": 1,
+    "title": "Portfolio Website",
+    "slug": "portfolio-website",
+    "description": "A personal portfolio built with Vue.js and Laravel.",
+    "repo_url": "https://github.com/florentbezara/portfolio",
+    "screenshot": "portfolio-website.jpg",
+    "languages": ["Vue", "Laravel"],
+    "technologies": ["Tailwind CSS"],
+    "featured": true,
+    "completed_at": "2025-03-01",
+    "is_published": true,
+    "owner": {
+      "login": "florentbezara",
+      "avatar_url": "default-avatar.jpg"
+    }
+  },
+  {
+    "id": 2,
+    "title": "Task Manager",
+    "slug": "task-manager",
+    "description": "A simple task management app.",
+    "repo_url": "https://github.com/florentbezara/task-manager",
+    "screenshot": "task-manager.jpg",
+    "languages": ["JavaScript"],
+    "technologies": ["Node.js"],
+    "featured": false,
+    "completed_at": "2025-02-15",
+    "is_published": true,
+    "owner": {
+      "login": "florentbezara",
+      "avatar_url": "default-avatar.jpg"
+    }
+  }
+]

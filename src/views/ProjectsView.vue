@@ -3,7 +3,7 @@
     <Header />
     <section class="mb-12">
       <div class="portfolio-container">
-        <CodeSection />
+        <ProjectSection />
       </div>
     </section>
     <section class="mb-12">
@@ -17,7 +17,7 @@
 
 <script>
 import Header from '../components/Header.vue'
-import CodeSection from '../components/CodeSection.vue'
+import ProjectSection from '../components/ProjectSection.vue'
 import NewsletterSection from '../components/NewsletterSection.vue'
 import Footer from '../components/Footer.vue'
 
@@ -25,7 +25,7 @@ export default {
   name: 'ProjectsView',
   components: {
     Header,
-    CodeSection,
+    ProjectSection,
     NewsletterSection,
     Footer,
   },

@@ -43,6 +43,7 @@
             <div class="rounded-full p-0.5 border-tech-gradient">
               <img
                 src="@/assets/images/me_1.png"
+                loading="lazy"
                 alt="Profile Picture"
                 class="w-28 h-28 sm:w-28 md:w-32 sm:h-28 md:h-32 rounded-full relative z-10 transition-transform duration-500 group-hover:scale-105"
               />
@@ -89,7 +90,7 @@
                 <router-link
                   :to="item.path"
                   class="nav-link relative px-1 py-2 inline-block transition-all duration-300"
-                  :class="{ active: $route.path === item.path }"
+                  :class="{ active: isRouteActive(item.path) }"
                 >
                   {{ item.name }}
                   <div
@@ -111,7 +112,7 @@
               <router-link
                 :to="item.path"
                 class="nav-link relative px-1 py-2 inline-block transition-all duration-300"
-                :class="{ active: $route.path === item.path }"
+                :class="{ active: isRouteActive(item.path) }"
               >
                 {{ item.name }}
                 <div
@@ -155,6 +156,27 @@ export default {
         default:
           return 'bg-vue-green'
       }
+    },
+    isRouteActive(path) {
+      // Vérifier si la route actuelle correspond à l'élément de navigation
+      const currentPath = this.$route.path
+
+      // Vérification du chemin exact
+      if (currentPath === path) {
+        return true
+      }
+
+      // Pour les pages de détail de projets
+      if (path === '/projects' && currentPath.startsWith('/projects/')) {
+        return true
+      }
+
+      // Pour les pages de détail d'articles
+      if (path === '/articles' && currentPath.startsWith('/articles/')) {
+        return true
+      }
+
+      return false
     },
   },
 }
