@@ -153,7 +153,7 @@ import Header from '../components/Header.vue'
 import Footer from '../components/Footer.vue'
 
 export default {
-  name: 'SigleArticle',
+  name: 'SingleArticle',
   components: {
     Header,
     Footer,

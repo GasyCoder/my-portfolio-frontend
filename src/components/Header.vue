@@ -72,9 +72,10 @@
             </div>
 
             <!-- Tags technologies -->
-            <div class="flex justify-center sm:justify-start mt-2 space-x-2">
-              <span class="tech-badge vue-badge">Vue.js</span>
+            <div class="flex justify-center sm:justify-start mt-2 space-x-3">
               <span class="tech-badge laravel-badge">Laravel</span>
+              <span class="tech-badge livewire-badge">Livewire</span>
+              <span class="tech-badge vue-badge">Vue.js</span>
               <span class="tech-badge tailwind-badge">Tailwind</span>
             </div>
           </div>
@@ -173,6 +174,11 @@ export default {
 
       // Pour les pages de détail d'articles
       if (path === '/articles' && currentPath.startsWith('/articles/')) {
+        return true
+      }
+
+      // Pour les pages de détail d'works
+      if (path === '/work' && currentPath.startsWith('/work/')) {
         return true
       }
 

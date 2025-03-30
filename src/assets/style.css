@@ -14,6 +14,7 @@
   --vue-green: #41b883;
   --vue-dark: #34495e;
   --laravel-red: #ff2d20;
+  --livewire-pink: #e16d9d;
   --laravel-dark: #292929;
   --tailwind-blue: rgb(56, 189, 248);
   --tailwind-dark: #0f172a;
@@ -39,6 +40,13 @@ body {
   background-color: var(--color-dark);
   color: var(--color-text-medium);
   letter-spacing: 0.01em;
+}
+
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 /* Titre de section multi-tech */
@@ -104,7 +112,7 @@ body {
 /* Conteneur principal */
 .portfolio-container {
   width: 100%;
-  max-width: 55rem !important;
+  max-width: 58rem !important;
   margin-left: auto;
   margin-right: auto;
   padding-left: 1.25rem;
@@ -194,6 +202,12 @@ body {
   background-color: rgba(255, 45, 32, 0.15);
   color: var(--laravel-red);
   border: 1px solid rgba(255, 45, 32, 0.3);
+}
+
+.livewire-badge {
+  background-color: rgba(224, 68, 133, 0.15);
+  color: var(--livewire-pink);
+  border: 1px solid rgba(242, 55, 186, 0.3);
 }
 
 .tailwind-badge {
@@ -386,6 +400,11 @@ body {
   background-color: rgba(255, 45, 32, 0.15);
   color: var(--laravel-red);
   border: 1px solid rgba(255, 45, 32, 0.3);
+}
+.tech-badge.livewire-badge {
+  background-color: rgba(255, 32, 117, 0.15);
+  color: var(--livewire-pink);
+  border: 1px solid rgba(255, 32, 158, 0.3);
 }
 
 .tech-badge.tailwind-badge {

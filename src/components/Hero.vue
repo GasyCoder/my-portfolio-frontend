@@ -43,8 +43,7 @@
 
             <!-- Description - Taille de texte adaptative -->
             <p class="mt-2 text-color-text-medium text-sm sm:text-base">
-              🚀 Software Artisan | Laravel & TALL Stack Specialist | Crafting Next-Gen AI Solutions
-              ⚙️
+              🚀 Transforming ideas into powerful web experiences. ⚙️
             </p>
 
             <!-- Liens sociaux - Espacement adaptatif -->

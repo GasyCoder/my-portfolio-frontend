@@ -31,23 +31,3 @@ export default {
   },
 }
 </script>
-
-<style scoped>
-.section-title {
-  position: relative;
-  display: inline-block;
-  font-weight: 700;
-  font-size: 24px;
-  color: #1f2937;
-  margin-bottom: 20px;
-}
-.section-title::after {
-  content: '';
-  position: absolute;
-  bottom: -6px;
-  left: 0;
-  width: 40px;
-  height: 4px;
-  background-color: #3b82f6;
-}
-</style>

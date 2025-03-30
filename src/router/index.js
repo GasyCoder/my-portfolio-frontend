@@ -38,7 +38,7 @@ const routes = [
   {
     path: '/projects/:slug',
     name: 'ProjectDetail',
-    component: () => import('../views/SigleProject.vue'),
+    component: () => import('../views/SingleProject.vue'),
     meta: {
       title: 'Projet | BEZARA Florent - Développeur Web',
       metaTags: [
@@ -65,6 +65,20 @@ const routes = [
     },
   },
   {
+    path: '/work/:slug',
+    name: 'WorkDetail',
+    component: () => import('../views/SingleWork.vue'),
+    meta: {
+      title: 'Projet | BEZARA Florent - Développeur Web',
+      metaTags: [
+        {
+          name: 'description',
+          content: 'Découvrez mes réalisations et projets professionnels en développement web.',
+        },
+      ],
+    },
+  },
+  {
     path: '/articles',
     name: 'Articles',
     component: () => import('../views/ArticlesView.vue'),
@@ -82,7 +96,7 @@ const routes = [
   {
     path: '/articles/:slug',
     name: 'ArticleDetail',
-    component: () => import('../views/SigleArticle.vue'),
+    component: () => import('../views/SingleArticle.vue'),
     meta: {
       title: 'Article | BEZARA Florent - Développeur Web',
       // Titre et description dynamiques gérés dans le composant
