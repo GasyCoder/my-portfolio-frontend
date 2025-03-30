@@ -6,8 +6,8 @@
       >
         <!-- Bouton "Start a project" déplacé en haut à droite -->
         <div class="absolute top-4 right-4 sm:top-5 sm:right-5 z-10">
-          <a
-            href="#contact"
+          <router-link
+            to="/contact"
             class="inline-flex items-center px-3 py-1.5 text-sm rounded border border-gray-600 hover:border-tailwind-blue text-gray-300 hover:text-white transition-colors bg-gray-800/50"
           >
             Contact me
@@ -25,7 +25,7 @@
                 d="M14 5l7 7m0 0l-7 7m7-7H3"
               />
             </svg>
-          </a>
+          </router-link>
         </div>
 
         <div

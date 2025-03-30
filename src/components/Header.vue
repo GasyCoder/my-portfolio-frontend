@@ -105,11 +105,11 @@
             </ul>
           </div>
         </div>
-
+        
         <!-- Navigation desktop original -->
         <nav class="relative hidden md:block">
           <ul
-            class="flex space-x-8 text-color-text-light text-sm uppercase tracking-wider font-medium"
+            class="flex space-x-8 text-color-text-light text-sm uppercase tracking-wider font-bold"
           >
             <li v-for="(item, index) in navItems" :key="index" class="relative">
               <router-link
