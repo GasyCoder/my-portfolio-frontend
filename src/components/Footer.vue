@@ -30,6 +30,7 @@
         <p class="text-color-text-medium text-sm">
           © {{ new Date().getFullYear() }} Bezara Florent. Built with
           <span class="text-laravel-red">Laravel</span>,
+          <span class="text-livewire-pink">Livewire</span>,
           <span class="text-vue-green">Vue.js</span> &
           <span class="text-tailwind-blue">Tailwind CSS</span>
         </p>

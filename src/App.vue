@@ -79,11 +79,12 @@
         <span class="inline-block w-2 h-2 rounded-full bg-vue-green mr-1"></span>
         <span class="inline-block w-2 h-2 rounded-full bg-laravel-red mr-1"></span>
         <span class="inline-block w-2 h-2 rounded-full bg-tailwind-blue mr-1"></span>
-        <span>portfolio:latest</span>
+        <span>@bezaraflorent</span>
       </div>
       <div class="flex items-center space-x-4">
-        <span class="text-vue-green">Vue.js</span>
         <span class="text-laravel-red">Laravel</span>
+        <span class="text-livewire-pink">Livewire</span>
+        <span class="text-vue-green">Vue.js</span>
         <span class="text-tailwind-blue">Tailwind</span>
       </div>
     </div>

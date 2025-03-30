@@ -70,7 +70,9 @@
                 class="absolute inset-0 bg-gradient-to-r from-vue-green via-laravel-red to-tailwind-blue animate-gradient-x"
               ></div>
             </div>
-
+            <p class="text-sm text-color-text-medium mt-1">
+              Turning ideas into exceptional digital experiences
+            </p>
             <!-- Tags technologies -->
             <div class="flex justify-center sm:justify-start mt-2 space-x-3">
               <span class="tech-badge laravel-badge">Laravel</span>
@@ -138,7 +140,7 @@ export default {
         { name: 'Projects', path: '/projects' },
         { name: 'Work', path: '/work' },
         { name: 'Articles', path: '/articles' },
-        { name: 'Contact', path: '/contact' },
+        // { name: 'Contact', path: '/contact' },
       ],
     }
   },

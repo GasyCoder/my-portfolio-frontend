@@ -660,6 +660,10 @@ body {
   color: var(--laravel-red);
 }
 
+.text-livewire-pink {
+  color: var(--livewire-pink);
+}
+
 .text-tailwind-blue {
   color: var(--tailwind-blue);
 }
