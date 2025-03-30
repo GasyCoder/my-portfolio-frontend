@@ -200,7 +200,7 @@
 <script>
 import Header from '../components/Header.vue'
 import Footer from '../components/Footer.vue'
-import api from '../api' // Importez api au lieu d'axios directement
+import api from '../api'
 
 export default {
   name: 'SigleWork',
@@ -214,7 +214,14 @@ export default {
       relatedWorks: [],
       isLoading: true,
       error: null,
+      apiBaseUrl: import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/api',
     }
+  },
+  computed: {
+    baseUrl() {
+      // Extraire la base URL sans le /api
+      return this.apiBaseUrl.replace(/\/api$/, '')
+    },
   },
   async created() {
     await this.fetchWorkData()
@@ -252,7 +259,6 @@ export default {
         const slug = this.$route.params.slug
         console.log('Fetching work with slug:', slug)
 
-        // Utiliser api.get au lieu de axios.get directement
         const response = await api.get(`/works/${slug}`)
         console.log('API Response:', response)
 
@@ -264,7 +270,7 @@ export default {
           !this.work.image.startsWith('http') &&
           !this.work.image.startsWith('/')
         ) {
-          this.work.image = `http://localhost:8000${this.work.image}`
+          this.work.image = `${this.baseUrl}${this.work.image}`
         }
 
         // Normaliser les données
@@ -289,7 +295,6 @@ export default {
 
     async fetchRelatedWorks(technology) {
       try {
-        // Utiliser api.get au lieu de axios.get directement
         const response = await api.get(`/works/technology/${technology}`)
         console.log('Related works response:', response)
 
@@ -349,6 +354,9 @@ export default {
       // S'assurer que l'URL de l'image est complète
       if (work.image && !work.image.startsWith('http') && !work.image.startsWith('/')) {
         work.image = `/${work.image}`
+      } else if (work.image && !work.image.startsWith('http') && work.image.startsWith('/')) {
+        // Si l'image commence par /, s'assurer que nous avons l'URL de base
+        work.image = `${this.baseUrl}${work.image}`
       }
 
       return work

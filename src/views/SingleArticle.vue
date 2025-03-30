@@ -163,7 +163,14 @@ export default {
       article: null,
       isLoading: true,
       error: null,
+      apiBaseUrl: import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/api',
     }
+  },
+  computed: {
+    baseUrl() {
+      // Extraire la base URL sans le /api
+      return this.apiBaseUrl.replace(/\/api$/, '')
+    },
   },
   async created() {
     await this.fetchArticleData()
@@ -204,7 +211,7 @@ export default {
 
         // Si l'image est un chemin relatif, ajoute l'URL de base du backend
         if (this.article.cover_image && !this.article.cover_image.startsWith('http')) {
-          this.article.cover_image = `http://localhost:8000${this.article.cover_image}` // Ajuste selon ton domaine
+          this.article.cover_image = `${this.baseUrl}${this.article.cover_image}`
         }
       } catch (error) {
         console.error("Erreur lors de la récupération de l'article depuis l'API:", error)
@@ -340,7 +347,10 @@ export default {
         publisher: {
           '@type': 'Organization',
           name: 'BEZARA Florent',
-          logo: { '@type': 'ImageObject', url: 'https://ton-site.com/logo.png' },
+          logo: {
+            '@type': 'ImageObject',
+            url: `${window.location.origin}/logo.png` // URL dynamique pour le logo
+          },
         },
         datePublished: new Date(this.article.published_at).toISOString(),
         dateModified: new Date(this.article.modified_at || this.article.published_at).toISOString(),

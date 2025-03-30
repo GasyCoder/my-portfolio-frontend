@@ -135,7 +135,7 @@
 <script>
 import AppLoader from '@/components/ui/AppLoader.vue'
 import AppError from '@/components/ui/AppError.vue'
-import axios from 'axios'
+import api from '../api' // Importer l'instance API configurée
 
 export default {
   name: 'WorkSection',
@@ -159,7 +159,8 @@ export default {
         this.isLoading = true
         console.log('Fetching works from API...')
 
-        const response = await axios.get('http://localhost:8000/api/works/featured')
+        // Utiliser l'instance API configurée au lieu de axios directement
+        const response = await api.get('/works/featured')
         console.log('API response:', response)
 
         if (Array.isArray(response.data)) {
@@ -171,6 +172,17 @@ export default {
         } else {
           this.works = []
         }
+
+        // Normaliser les URL d'images si nécessaire
+        this.works = this.works.map((work) => {
+          if (work.image && !work.image.startsWith('http')) {
+            // Extraire la base URL sans le /api
+            const baseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/api'
+            const baseUrlWithoutApi = baseUrl.replace(/\/api$/, '')
+            work.image = `${baseUrlWithoutApi}${work.image}`
+          }
+          return work
+        })
 
         console.log('Processed works:', this.works)
       } catch (err) {

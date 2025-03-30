@@ -293,6 +293,7 @@ export default {
       isLoading: true,
       error: null,
       currentFilter: 'all',
+      apiBaseUrl: import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/api',
     }
   },
   computed: {
@@ -323,9 +324,12 @@ export default {
         this.specificProjects = this.allProjects
 
         // Normaliser les URLs des images
+        // Extraire la base URL sans le /api
+        const baseUrl = this.apiBaseUrl.replace(/\/api$/, '')
+
         this.specificProjects = this.specificProjects.map((project) => {
           if (project.screenshot && !project.screenshot.startsWith('http')) {
-            project.screenshot = `http://localhost:8000${project.screenshot}`
+            project.screenshot = `${baseUrl}${project.screenshot}`
           }
           return project
         })
@@ -336,9 +340,13 @@ export default {
         this.allProjects = projectsData
         this.specificProjects = this.allProjects
 
-        // Normaliser les URLs des images en mode fallback
+        // Garder l'URL des images en relatif en mode fallback pour plus de flexibilité
         this.specificProjects = this.specificProjects.map((project) => {
-          if (project.screenshot && !project.screenshot.startsWith('http')) {
+          if (
+            project.screenshot &&
+            !project.screenshot.startsWith('http') &&
+            !project.screenshot.startsWith('/')
+          ) {
             project.screenshot = `/images/${project.screenshot}`
           }
           return project

@@ -218,7 +218,14 @@ export default {
       project: null,
       isLoading: true,
       error: null,
+      apiBaseUrl: import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/api',
     }
+  },
+  computed: {
+    baseUrl() {
+      // Extraire la base URL sans le /api
+      return this.apiBaseUrl.replace(/\/api$/, '')
+    },
   },
   async created() {
     await this.fetchProjectData()
@@ -259,7 +266,7 @@ export default {
 
         // Ajuster l'URL du screenshot si relatif
         if (this.project.screenshot && !this.project.screenshot.startsWith('http')) {
-          this.project.screenshot = `http://localhost:8000${this.project.screenshot}`
+          this.project.screenshot = `${this.baseUrl}${this.project.screenshot}`
         }
       } catch (error) {
         console.error("Erreur lors de la récupération du projet depuis l'API:", error)
