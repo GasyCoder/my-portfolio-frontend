@@ -4,9 +4,9 @@
       <div class="portfolio-container">
         <!-- En-tête avec titre et barre de recherche -->
         <div
-          class="flex flex-col md:flex-row items-start md:items-center justify-between mb-3 gap-4"
+          class="flex flex-col items-start justify-between gap-4 mb-3 md:flex-row md:items-center"
         >
-          <h3 class="section-title mb-0">Articles</h3>
+          <h3 class="mb-0 section-title">Articles</h3>
 
           <!-- Barre de recherche -->
           <div class="relative w-full md:w-auto">
@@ -14,13 +14,13 @@
               v-model="searchQuery"
               type="text"
               placeholder="Search..."
-              class="bg-gray-800/40 border border-gray-700 rounded-full py-2 pl-10 pr-4 w-full md:w-64 text-sm text-color-text-light focus:outline-none focus:ring-1 focus:ring-gray-500 focus:border-gray-500"
+              class="w-full py-2 pl-10 pr-4 text-sm border border-gray-700 rounded-full bg-gray-800/40 md:w-64 text-color-text-light focus:outline-none focus:ring-1 focus:ring-gray-500 focus:border-gray-500"
               @input="handleSearch"
             />
-            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+            <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                class="h-5 w-5 text-gray-400"
+                class="w-5 h-5 text-gray-400"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -47,16 +47,16 @@
           <div
             v-for="(article, index) in paginatedArticles"
             :key="article.id"
-            class="card p-6 fade-in-up hover:shadow-lg transition-all duration-300"
+            class="p-6 transition-all duration-300 card fade-in-up hover:shadow-lg"
             :style="{ animationDelay: `${index * 0.1}s` }"
           >
             <!-- Titre + badge de technologie -->
             <div class="flex flex-wrap items-start justify-between">
-              <h4 class="text-lg font-semibold text-color-text-light flex-1">
+              <h4 class="flex-1 text-lg font-semibold text-color-text-light">
                 {{ article.title }}
               </h4>
               <span
-                class="tech-badge text-xs ml-2 mt-1"
+                class="mt-1 ml-2 text-xs tech-badge"
                 :class="getCategoryBadgeClass(article.category)"
               >
                 {{ article.category }}
@@ -65,27 +65,27 @@
 
             <!-- Métadonnées -->
             <div class="flex items-center mt-2">
-              <p class="text-color-text-medium text-xs">
+              <p class="text-xs text-color-text-medium">
                 {{ formatDate(article.published_at) }} • {{ article.read_time }} minute read
               </p>
             </div>
 
             <!-- Contenu avec effet de gradient subtil sur le texte -->
-            <div class="text-color-text-medium mt-3 leading-relaxed line-clamp-3">
+            <div class="mt-3 leading-relaxed text-color-text-medium line-clamp-3">
               <p v-html="getFormattedContent(article.content)"></p>
             </div>
 
             <!-- Bouton de lecture -->
-            <div class="mt-4 pt-3 border-t border-gray-700">
+            <div class="pt-3 mt-4 border-t border-gray-700">
               <router-link
                 :to="`/articles/${article.slug}`"
-                class="btn text-sm inline-flex items-center rounded-md py-2 px-4 transition-all duration-300 hover:opacity-90"
+                class="inline-flex items-center px-4 py-2 text-sm transition-all duration-300 rounded-md btn hover:opacity-90"
                 :class="getArticleButtonClass(article.category)"
               >
                 Read Article
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  class="h-4 w-4 ml-1"
+                  class="w-4 h-4 ml-1"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
@@ -102,7 +102,7 @@
           </div>
 
           <!-- Message si aucun article -->
-          <div v-if="filteredArticles.length === 0" class="text-center py-8 text-color-text-medium">
+          <div v-if="filteredArticles.length === 0" class="py-8 text-center text-color-text-medium">
             Aucun article disponible correspondant à votre recherche.
           </div>
         </div>
@@ -110,19 +110,19 @@
         <!-- Pagination -->
         <div
           v-if="!isLoading && !error && filteredArticles.length > 0"
-          class="mt-8 flex justify-center"
+          class="flex justify-center mt-8"
         >
           <div class="flex items-center space-x-2">
             <!-- Bouton page précédente -->
             <button
               @click="prevPage"
               :disabled="currentPage === 1"
-              class="w-10 h-10 rounded-full flex items-center justify-center border border-gray-700 text-color-text-light disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-800/40 transition-colors"
+              class="flex items-center justify-center w-10 h-10 transition-colors border border-gray-700 rounded-full text-color-text-light disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-800/40"
               :class="{ 'opacity-50 cursor-not-allowed': currentPage === 1 }"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                class="h-5 w-5"
+                class="w-5 h-5"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -141,7 +141,7 @@
               v-for="page in totalPages"
               :key="page"
               @click="goToPage(page)"
-              class="w-10 h-10 rounded-full flex items-center justify-center cursor-pointer transition-colors"
+              class="flex items-center justify-center w-10 h-10 transition-colors rounded-full cursor-pointer"
               :class="
                 page === currentPage
                   ? 'bg-gray-700 text-white'
@@ -155,12 +155,12 @@
             <button
               @click="nextPage"
               :disabled="currentPage === totalPages"
-              class="w-10 h-10 rounded-full flex items-center justify-center border border-gray-700 text-color-text-light disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-800/40 transition-colors"
+              class="flex items-center justify-center w-10 h-10 transition-colors border border-gray-700 rounded-full text-color-text-light disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-800/40"
               :class="{ 'opacity-50 cursor-not-allowed': currentPage === totalPages }"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                class="h-5 w-5"
+                class="w-5 h-5"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"

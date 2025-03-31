@@ -47,26 +47,26 @@
         </div>
 
         <!-- Content -->
-        <div class="relative z-10 p-4 sm:p-6 md:p-8 text-center">
+        <div class="relative z-10 p-4 text-center sm:p-6 md:p-8">
           <div
-            class="inline-flex items-center px-2 sm:px-3 py-1 rounded-full bg-gray-800/50 backdrop-blur-sm mb-2"
+            class="inline-flex items-center px-2 py-1 mb-2 rounded-full sm:px-3 bg-gray-800/50 backdrop-blur-sm"
           >
             <span class="w-1.5 sm:w-2 h-1.5 sm:h-2 rounded-full bg-vue-green mr-1"></span>
             <span class="w-1.5 sm:w-2 h-1.5 sm:h-2 rounded-full bg-laravel-red mr-1"></span>
             <span class="w-1.5 sm:w-2 h-1.5 sm:h-2 rounded-full bg-tailwind-blue mr-1"></span>
-            <p class="text-xs font-medium uppercase tracking-wider text-gray-300">Newsletter</p>
+            <p class="text-xs font-medium tracking-wider text-gray-300 uppercase">Newsletter</p>
           </div>
 
-          <h2 class="text-xl sm:text-2xl font-bold mt-2 text-tech-gradient">Stay Up To Date</h2>
-          <p class="mt-1 sm:mt-2 text-sm sm:text-base text-gray-300">Laravel, Vue & Tailwind CSS</p>
+          <h2 class="mt-2 text-xl font-bold sm:text-2xl text-tech-gradient">Stay Up To Date</h2>
+          <p class="mt-1 text-sm text-gray-300 sm:mt-2 sm:text-base">Laravel, Vue & Tailwind CSS</p>
 
           <!-- Message de succès -->
           <div v-if="subscriptionSuccess" class="mt-4 sm:mt-6 animate-fade-in">
-            <div class="p-3 rounded-md bg-green-900/50 border border-green-500/30 text-green-300">
+            <div class="p-3 text-green-300 border rounded-md bg-green-900/50 border-green-500/30">
               <div class="flex items-center">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  class="h-5 w-5 mr-2"
+                  class="w-5 h-5 mr-2"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
@@ -84,30 +84,30 @@
           </div>
 
           <!-- Form avec gradient border - responsive pour mobile -->
-          <div v-if="!subscriptionSuccess" class="mt-4 sm:mt-6 flex justify-center">
+          <div v-if="!subscriptionSuccess" class="flex justify-center mt-4 sm:mt-6">
             <div
               class="p-0.5 rounded-md bg-gradient-to-r from-vue-green via-laravel-red to-tailwind-blue inline-flex w-full max-w-xs sm:max-w-md"
               :class="{ 'opacity-75': isSubmitting }"
             >
-              <div class="flex flex-col sm:flex-row w-full bg-gray-900 rounded-md">
+              <div class="flex flex-col w-full bg-gray-900 rounded-md sm:flex-row">
                 <input
                   v-model="email"
                   type="email"
                   placeholder="Email Address"
-                  class="w-full bg-transparent text-white border-none focus:outline-none focus:ring-0 p-3 text-sm"
+                  class="w-full p-3 text-sm text-white bg-transparent border-none focus:outline-none focus:ring-0"
                   :class="{ 'border-red-500 focus:border-red-500': validationError }"
                   :disabled="isSubmitting"
                   @keydown.enter="subscribe"
                 />
                 <button
                   @click="subscribe"
-                  class="p-2 sm:p-3 text-white text-sm font-medium relative overflow-hidden"
+                  class="relative p-2 overflow-hidden text-sm font-medium text-white sm:p-3"
                   :disabled="isSubmitting"
                 >
                   <span v-if="!isSubmitting" class="relative z-10 mr-3">Subscribe</span>
-                  <span v-else class="relative z-10 mr-3 flex items-center">
+                  <span v-else class="relative z-10 flex items-center mr-3">
                     <svg
-                      class="animate-spin h-4 w-4 mr-1"
+                      class="w-4 h-4 mr-1 animate-spin"
                       xmlns="http://www.w3.org/2000/svg"
                       fill="none"
                       viewBox="0 0 24 24"
@@ -139,33 +139,33 @@
           <!-- Message d'erreur -->
           <div
             v-if="validationError && !subscriptionSuccess"
-            class="mt-2 text-red-400 text-xs sm:text-sm"
+            class="mt-2 text-xs text-red-400 sm:text-sm"
           >
             {{ validationError }}
           </div>
 
-          <p class="mt-3 sm:mt-4 text-gray-400 text-xs sm:text-sm max-w-md mx-auto">
+          <p class="max-w-md mx-auto mt-3 text-xs text-gray-400 sm:mt-4 sm:text-sm">
             I write about web development. I share what I'm working on and what I'm learning. No
             spam and unsubscribe at any time.
           </p>
 
           <!-- Tech icons -->
-          <div class="flex justify-center mt-4 sm:mt-6 space-x-3 sm:space-x-4">
-            <div class="h-5 w-5 sm:h-6 sm:w-6 text-vue-green">
+          <div class="flex justify-center mt-4 space-x-3 sm:mt-6 sm:space-x-4">
+            <div class="w-5 h-5 sm:h-6 sm:w-6 text-vue-green">
               <svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                 <path
                   d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"
                 />
               </svg>
             </div>
-            <div class="h-5 w-5 sm:h-6 sm:w-6 text-laravel-red">
+            <div class="w-5 h-5 sm:h-6 sm:w-6 text-laravel-red">
               <svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                 <path
                   d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"
                 />
               </svg>
             </div>
-            <div class="h-5 w-5 sm:h-6 sm:w-6 text-tailwind-blue">
+            <div class="w-5 h-5 sm:h-6 sm:w-6 text-tailwind-blue">
               <svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                 <path
                   d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"

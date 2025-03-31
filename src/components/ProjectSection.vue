@@ -2,14 +2,14 @@
   <section class="mb-12">
     <div class="portfolio-container">
       <!-- En-tête avec titre et filtre -->
-      <div class="flex flex-col md:flex-row items-start md:items-center justify-between mb-6 gap-4">
+      <div class="flex flex-col items-start justify-between gap-4 mb-6 md:flex-row md:items-center">
         <h3 class="section-title">Projects</h3>
 
         <!-- Filtres par language -->
         <div class="flex flex-wrap gap-2">
           <button
             @click="filterProjects('all')"
-            class="tech-filter-btn px-3 py-1 text-xs rounded-full transition-colors"
+            class="px-3 py-1 text-xs transition-colors rounded-full tech-filter-btn"
             :class="
               currentFilter === 'all'
                 ? 'bg-gray-700 text-white'
@@ -22,7 +22,7 @@
             v-for="lang in availableLanguages"
             :key="lang"
             @click="filterProjects(lang)"
-            class="tech-filter-btn px-3 py-1 text-xs rounded-full transition-colors"
+            class="px-3 py-1 text-xs transition-colors rounded-full tech-filter-btn"
             :class="
               currentFilter === lang
                 ? getTechBadgeClass(lang)
@@ -39,12 +39,12 @@
 
       <div v-else>
         <!-- Message si aucun projet ne correspond au filtre -->
-        <div v-if="specificProjects.length === 0" class="text-center py-8 text-gray-400">
-          <h4 class="text-xl font-semibold mb-2">No projects found</h4>
+        <div v-if="specificProjects.length === 0" class="py-8 text-center text-gray-400">
+          <h4 class="mb-2 text-xl font-semibold">No projects found</h4>
           <p>No projects match the current filter criteria.</p>
           <button
             @click="filterProjects('all')"
-            class="mt-4 px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded-md text-white transition-colors"
+            class="px-4 py-2 mt-4 text-white transition-colors bg-gray-700 rounded-md hover:bg-gray-600"
           >
             View all projects
           </button>
@@ -56,26 +56,26 @@
           <div
             v-for="(project, index) in specificProjects"
             :key="project.id"
-            class="project-item bg-gray-900/50 border border-gray-800/50 rounded-lg overflow-hidden hover:bg-gray-900/70 transition-all duration-300"
+            class="overflow-hidden transition-all duration-300 border rounded-lg project-item bg-gray-900/50 border-gray-800/50 hover:bg-gray-900/70"
             :class="{ 'featured-project': project.featured }"
           >
             <div class="flex flex-col md:flex-row">
               <!-- Image du projet (visible seulement sur mobile) -->
-              <div class="md:hidden w-full h-40 bg-gray-800 relative">
+              <div class="relative w-full h-40 bg-gray-800 md:hidden">
                 <img
                   v-if="project.screenshot"
                   :src="project.screenshot"
                   :alt="project.title"
-                  class="w-full h-full object-cover"
+                  class="object-cover w-full h-full"
                   loading="lazy"
                 />
                 <div
                   v-else
-                  class="w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-800 to-gray-900"
+                  class="flex items-center justify-center w-full h-full bg-gradient-to-br from-gray-800 to-gray-900"
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
-                    class="h-10 w-10 text-gray-700"
+                    class="w-10 h-10 text-gray-700"
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
@@ -91,21 +91,21 @@
               </div>
 
               <!-- Image du projet (desktop) -->
-              <div class="hidden md:block w-40 h-auto bg-gray-800 relative">
+              <div class="relative hidden w-40 h-auto bg-gray-800 md:block">
                 <img
                   v-if="project.screenshot"
                   :src="project.screenshot"
                   :alt="project.title"
-                  class="w-full h-full object-cover"
+                  class="object-cover w-full h-full"
                   loading="lazy"
                 />
                 <div
                   v-else
-                  class="w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-800 to-gray-900"
+                  class="flex items-center justify-center w-full h-full bg-gradient-to-br from-gray-800 to-gray-900"
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
-                    class="h-10 w-10 text-gray-700"
+                    class="w-10 h-10 text-gray-700"
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
@@ -122,14 +122,14 @@
                 <!-- Badge featured -->
                 <div
                   v-if="project.featured"
-                  class="absolute top-2 left-2 bg-yellow-600/90 text-yellow-100 text-xs font-semibold px-2 py-1 rounded"
+                  class="absolute px-2 py-1 text-xs font-semibold text-yellow-100 rounded top-2 left-2 bg-yellow-600/90"
                 >
                   Featured
                 </div>
               </div>
 
               <!-- Contenu du projet -->
-              <div class="flex-1 p-4 flex flex-col justify-between">
+              <div class="flex flex-col justify-between flex-1 p-4">
                 <div>
                   <!-- En-tête avec titre et badge -->
                   <div class="flex items-start justify-between gap-2 mb-2">
@@ -143,7 +143,7 @@
                           Featured
                         </span>
                       </h4>
-                      <div class="text-gray-400 text-xs mt-1">
+                      <div class="mt-1 text-xs text-gray-400">
                         <span>{{
                           formatDate(project.completed_at || project.created_at || '2024-01-01')
                         }}</span>
@@ -162,7 +162,7 @@
                   </div>
 
                   <!-- Description -->
-                  <p class="text-color-text-medium text-sm mb-3 line-clamp-2">
+                  <p class="mb-3 text-sm text-color-text-medium line-clamp-2">
                     {{ project.description || 'No description available' }}
                   </p>
                 </div>
