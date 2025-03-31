@@ -3,7 +3,7 @@ import axios from 'axios'
 // Création de l'instance axios avec la configuration de base
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL || 'https://api.gasycoder.com/api',
-  // withCredentials: true,
+  withCredentials: true, // Essentiel pour les cookies CSRF
   headers: {
     'Content-Type': 'application/json',
     Accept: 'application/json',

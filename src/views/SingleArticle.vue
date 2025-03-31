@@ -5,7 +5,7 @@
       <div class="portfolio-container">
         <div v-if="isLoading" class="py-8 text-center text-gray-400">
           <svg
-            class="animate-spin h-8 w-8 mx-auto mb-2"
+            class="w-8 h-8 mx-auto mb-2 animate-spin"
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
             viewBox="0 0 24 24"
@@ -30,7 +30,7 @@
         <div v-else-if="error" class="py-8 text-center text-red-400">
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            class="h-8 w-8 mx-auto mb-2"
+            class="w-8 h-8 mx-auto mb-2"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -45,14 +45,14 @@
           <p>{{ error }}</p>
         </div>
 
-        <article v-else-if="article" class="card p-6 backdrop-blur-md rounded-lg">
+        <article v-else-if="article" class="p-6 rounded-lg card backdrop-blur-md">
           <header>
-            <h1 class="text-3xl font-bold text-color-text-light mb-4">{{ article.title }}</h1>
-            <div class="flex items-center space-x-2 mb-4">
-              <span class="tech-badge text-xs" :class="getCategoryBadgeClass(article.category)">
+            <h1 class="mb-4 text-3xl font-bold text-color-text-light">{{ article.title }}</h1>
+            <div class="flex items-center mb-4 space-x-2">
+              <span class="text-xs tech-badge" :class="getCategoryBadgeClass(article.category)">
                 {{ article.category }}
               </span>
-              <time :datetime="article.published_at" class="text-color-text-medium text-xs">
+              <time :datetime="article.published_at" class="text-xs text-color-text-medium">
                 {{ formatDate(article.published_at) }} • {{ article.read_time }} minute read
               </time>
             </div>
@@ -60,7 +60,7 @@
             <!-- Auteur -->
             <div v-if="article.author" class="flex items-center mb-6">
               <span
-                class="flex items-center justify-center w-10 h-10 rounded-full bg-gray-800/50 text-2xl mr-3"
+                class="flex items-center justify-center w-10 h-10 mr-3 text-2xl rounded-full bg-gray-800/50"
                 >👨‍💻</span
               >
               <div>
@@ -78,17 +78,24 @@
               v-if="article.cover_image"
               :src="article.cover_image"
               :alt="article.title"
-              class="w-full h-auto rounded-lg mb-6 object-cover"
+              class="object-cover w-full h-auto mb-6 rounded-lg"
               loading="lazy"
             />
           </header>
 
+          <!-- Contenu avec support de Markdown -->
           <div
+            v-if="!isMarkdown"
             class="prose prose-lg max-w-none text-color-text-medium prose-headings:text-color-text-light prose-strong:text-color-text-light prose-a:text-tailwind-blue prose-a:no-underline hover:prose-a:underline"
             v-html="article.content"
           ></div>
+          <div
+            v-else
+            class="prose prose-lg max-w-none text-color-text-medium prose-headings:text-color-text-light prose-strong:text-color-text-light prose-a:text-tailwind-blue prose-a:no-underline hover:prose-a:underline"
+            v-html="renderedContent"
+          ></div>
 
-          <footer class="mt-8 pt-6 border-t border-gray-700">
+          <footer class="pt-6 mt-8 border-t border-gray-700">
             <div v-if="article.tags && article.tags.length" class="flex flex-wrap gap-2 mb-4">
               <span
                 v-for="tag in article.tags"
@@ -100,7 +107,7 @@
             </div>
 
             <div v-if="article.related_articles && article.related_articles.length" class="mt-6">
-              <h3 class="text-lg font-medium text-color-text-light mb-3">Articles connexes</h3>
+              <h3 class="mb-3 text-lg font-medium text-color-text-light">Articles connexes</h3>
               <ul class="space-y-2">
                 <li
                   v-for="relatedArticle in article.related_articles"
@@ -116,11 +123,11 @@
 
             <router-link
               to="/articles"
-              class="text-tailwind-blue mt-6 inline-flex items-center hover:underline"
+              class="inline-flex items-center mt-6 text-tailwind-blue hover:underline"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                class="h-4 w-4 mr-1"
+                class="w-4 h-4 mr-1"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -151,6 +158,7 @@ import api from '../api'
 import articlesData from '../data/articles.json' // Importe le JSON comme fallback
 import Header from '../components/Header.vue'
 import Footer from '../components/Footer.vue'
+import { marked } from 'marked' // Importez marked pour le support markdown
 
 export default {
   name: 'SingleArticle',
@@ -170,6 +178,41 @@ export default {
     baseUrl() {
       // Extraire la base URL sans le /api
       return this.apiBaseUrl.replace(/\/api$/, '')
+    },
+    // Détecte si le contenu est au format markdown
+    isMarkdown() {
+      return (
+        this.article &&
+        (this.article.is_markdown === true ||
+          (this.article.content &&
+            (this.article.content.includes('## ') ||
+              this.article.content.includes('# ') ||
+              this.article.content.includes('```'))))
+      )
+    },
+    // Convertit le markdown en HTML
+    renderedContent() {
+      if (!this.article || !this.article.content) return ''
+
+      // Configuration de marked pour la sécurité
+      marked.setOptions({
+        gfm: true, // GitHub Flavored Markdown
+        breaks: true, // Line breaks as <br>
+        sanitize: false, // Nous utilisons DOMPurify si nécessaire
+        smartypants: true, // Smart typographic punctuation
+        highlight: function (code, lang) {
+          // Vous pouvez ajouter une bibliothèque de coloration syntaxique ici si besoin
+          return code
+        },
+      })
+
+      try {
+        // Conversion de markdown à HTML
+        return marked.parse(this.article.content)
+      } catch (error) {
+        console.error('Erreur lors du rendu markdown:', error)
+        return this.article.content
+      }
     },
   },
   async created() {
@@ -209,9 +252,35 @@ export default {
         const response = await api.get(`/articles/${slug}`)
         this.article = response.data
 
-        // Si l'image est un chemin relatif, ajoute l'URL de base du backend
-        if (this.article.cover_image && !this.article.cover_image.startsWith('http')) {
-          this.article.cover_image = `${this.baseUrl}${this.article.cover_image}`
+        // Correction des chemins d'images
+        if (this.article.cover_image) {
+          // Si l'image commence par / mais pas par http
+          if (
+            this.article.cover_image.startsWith('/') &&
+            !this.article.cover_image.startsWith('http')
+          ) {
+            // Assurez-vous que baseUrl n'a pas de slash à la fin
+            const baseUrl = this.baseUrl.endsWith('/') ? this.baseUrl.slice(0, -1) : this.baseUrl
+            this.article.cover_image = `${baseUrl}${this.article.cover_image}`
+          }
+          // Si l'image ne commence pas par / et pas par http
+          else if (
+            !this.article.cover_image.startsWith('/') &&
+            !this.article.cover_image.startsWith('http')
+          ) {
+            const baseUrl = this.baseUrl.endsWith('/') ? this.baseUrl : `${this.baseUrl}/`
+            this.article.cover_image = `${baseUrl}${this.article.cover_image}`
+          }
+        }
+
+        // Ajouter des logs pour debug
+        console.log('URL de base:', this.baseUrl)
+        console.log('Chemin image final:', this.article.cover_image)
+
+        // Vérifiez si des images sont présentes dans le contenu et corrigez leurs chemins
+        if (this.article.content && this.isMarkdown) {
+          // Corrigez les chemins des images dans le contenu markdown
+          this.article.content = this.fixImagePathsInMarkdown(this.article.content)
         }
       } catch (error) {
         console.error("Erreur lors de la récupération de l'article depuis l'API:", error)
@@ -232,6 +301,28 @@ export default {
       } finally {
         this.isLoading = false
       }
+    },
+    // Fonction pour corriger les chemins d'images dans le contenu markdown
+    fixImagePathsInMarkdown(content) {
+      // Détecte les références d'images markdown ![alt](path) et les corrige
+      const imgRegex = /!\[([^\]]*)\]\(([^)]+)\)/g
+      return content.replace(imgRegex, (match, alt, path) => {
+        if (path.startsWith('http')) {
+          return match // Déjà une URL absolue, ne rien changer
+        }
+
+        // Construire le chemin correct pour l'image
+        let fixedPath = path
+        if (path.startsWith('/')) {
+          const baseUrl = this.baseUrl.endsWith('/') ? this.baseUrl.slice(0, -1) : this.baseUrl
+          fixedPath = `${baseUrl}${path}`
+        } else {
+          const baseUrl = this.baseUrl.endsWith('/') ? this.baseUrl : `${this.baseUrl}/`
+          fixedPath = `${baseUrl}${path}`
+        }
+
+        return `![${alt}](${fixedPath})`
+      })
     },
     formatDate(date) {
       return new Date(date).toLocaleDateString('fr-FR', {
@@ -349,7 +440,7 @@ export default {
           name: 'BEZARA Florent',
           logo: {
             '@type': 'ImageObject',
-            url: `${window.location.origin}/logo.png` // URL dynamique pour le logo
+            url: `${window.location.origin}/logo.png`, // URL dynamique pour le logo
           },
         },
         datePublished: new Date(this.article.published_at).toISOString(),
@@ -364,3 +455,65 @@ export default {
   },
 }
 </script>
+
+<style>
+/* Styles pour le rendu markdown */
+.prose pre {
+  background-color: rgba(30, 41, 59, 0.8);
+  border-radius: 0.375rem;
+  padding: 1rem;
+  overflow-x: auto;
+}
+
+.prose code {
+  background-color: rgba(30, 41, 59, 0.6);
+  border-radius: 0.25rem;
+  padding: 0.125rem 0.25rem;
+  font-family: ui-monospace, monospace;
+}
+
+.prose pre code {
+  background-color: transparent;
+  padding: 0;
+}
+
+.prose blockquote {
+  border-left: 4px solid #38bdf8;
+  padding-left: 1rem;
+  font-style: italic;
+}
+
+.prose img {
+  border-radius: 0.375rem;
+  max-width: 100%;
+  height: auto;
+}
+
+.prose a {
+  color: #38bdf8;
+  text-decoration: none;
+}
+
+.prose a:hover {
+  text-decoration: underline;
+}
+
+.prose table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.prose thead {
+  background-color: rgba(30, 41, 59, 0.4);
+}
+
+.prose th,
+.prose td {
+  padding: 0.5rem;
+  border: 1px solid rgba(148, 163, 184, 0.2);
+}
+
+.prose tr:nth-child(even) {
+  background-color: rgba(30, 41, 59, 0.2);
+}
+</style>
