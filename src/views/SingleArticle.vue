@@ -73,17 +73,19 @@
               </div>
             </div>
 
-            <!-- Image principale -->
-            <img
-              v-if="article.cover_image"
-              :src="article.cover_image"
-              :alt="article.title"
-              class="object-cover w-full h-auto mb-6 rounded-lg"
-              loading="lazy"
-            />
+            <!-- Image principale avec gestion des erreurs -->
+            <div v-if="article.cover_image" class="mb-6">
+              <img
+                :src="article.cover_image"
+                :alt="article.title"
+                class="object-cover w-full h-auto rounded-lg"
+                loading="lazy"
+                @error="handleImageError"
+              />
+            </div>
           </header>
 
-          <!-- Contenu avec support de Markdown -->
+          <!-- Contenu avec support de Markdown - Amélioration de la détection-->
           <div
             v-if="!isMarkdown"
             class="prose prose-lg max-w-none text-color-text-medium prose-headings:text-color-text-light prose-strong:text-color-text-light prose-a:text-tailwind-blue prose-a:no-underline hover:prose-a:underline"
@@ -159,6 +161,11 @@ import articlesData from '../data/articles.json' // Importe le JSON comme fallba
 import Header from '../components/Header.vue'
 import Footer from '../components/Footer.vue'
 import { marked } from 'marked' // Importez marked pour le support markdown
+// Import DOMPurify pour sécuriser le HTML
+import DOMPurify from 'dompurify'
+// Import highlight.js pour la coloration syntaxique (si besoin)
+import hljs from 'highlight.js'
+import 'highlight.js/styles/atom-one-dark.css' // Thème de coloration
 
 export default {
   name: 'SingleArticle',
@@ -172,6 +179,7 @@ export default {
       isLoading: true,
       error: null,
       apiBaseUrl: import.meta.env.VITE_API_BASE_URL || 'https://api.gasycoder.com/api',
+      imageFallbackUrl: '/images/article-placeholder.jpg', // Image de remplacement en cas d'erreur
     }
   },
   computed: {
@@ -179,36 +187,63 @@ export default {
       // Extraire la base URL sans le /api
       return this.apiBaseUrl.replace(/\/api$/, '')
     },
-    // Détecte si le contenu est au format markdown
+    // Détecte si le contenu est au format markdown - Amélioration de la détection
     isMarkdown() {
-      return (
-        this.article &&
-        (this.article.is_markdown === true ||
-          (this.article.content &&
-            (this.article.content.includes('## ') ||
-              this.article.content.includes('# ') ||
-              this.article.content.includes('```'))))
-      )
+      if (!this.article || !this.article.content) return false
+
+      // Vérifier d'abord le flag explicite s'il existe
+      if (this.article.is_markdown === true) return true
+
+      // Sinon détecter automatiquement les motifs markdown courants
+      const markdownPatterns = [
+        /^#\s+/m, // Titre h1
+        /^##\s+/m, // Titre h2
+        /^###\s+/m, // Titre h3
+        /^>/m, // Citation
+        /^-\s+/m, // Liste à puces
+        /^[0-9]+\.\s+/m, // Liste numérotée
+        /\[.+\]\(.+\)/, // Lien
+        /!\[.+\]\(.+\)/, // Image
+        /^```[\s\S]+```$/m, // Bloc de code
+        /\*\*.+\*\*/, // Gras
+        /\*.+\*/, // Italique
+        /~~.+~~/, // Barré
+        /^---$/m, // Ligne horizontale
+      ]
+
+      return markdownPatterns.some((pattern) => pattern.test(this.article.content))
     },
-    // Convertit le markdown en HTML
+    // Convertit le markdown en HTML avec meilleure coloration syntaxique
     renderedContent() {
       if (!this.article || !this.article.content) return ''
 
-      // Configuration de marked pour la sécurité
+      // Configuration de marked pour la sécurité et la coloration syntaxique
       marked.setOptions({
         gfm: true, // GitHub Flavored Markdown
         breaks: true, // Line breaks as <br>
-        sanitize: false, // Nous utilisons DOMPurify si nécessaire
+        smartLists: true, // Meilleure gestion des listes
         smartypants: true, // Smart typographic punctuation
         highlight: function (code, lang) {
-          // Vous pouvez ajouter une bibliothèque de coloration syntaxique ici si besoin
-          return code
+          // Utilisation de highlight.js pour la coloration syntaxique
+          if (lang && hljs.getLanguage(lang)) {
+            try {
+              return hljs.highlight(code, { language: lang }).value
+            } catch (e) {
+              console.error(e)
+            }
+          }
+          return hljs.highlightAuto(code).value
         },
       })
 
       try {
-        // Conversion de markdown à HTML
-        return marked.parse(this.article.content)
+        // Conversion de markdown à HTML avec DOMPurify pour la sécurité
+        const rawHtml = marked.parse(this.article.content)
+        return DOMPurify.sanitize(rawHtml, {
+          ADD_TAGS: ['iframe'], // Permet des iframes si besoin (par ex. pour YouTube)
+          ADD_ATTR: ['allow', 'allowfullscreen', 'frameborder', 'scrolling'],
+          FORBID_TAGS: ['style'], // Interdit les balises de style inline qui pourraient casser le design
+        })
       } catch (error) {
         console.error('Erreur lors du rendu markdown:', error)
         return this.article.content
@@ -222,6 +257,14 @@ export default {
     if (this.article) {
       this.updateMetaTags()
     }
+    // Ajouter les classes pour highlight.js
+    this.applyCodeHighlighting()
+  },
+  updated() {
+    // Appliquer la coloration syntaxique après chaque mise à jour
+    this.$nextTick(() => {
+      this.applyCodeHighlighting()
+    })
   },
   watch: {
     '$route.params.slug': {
@@ -252,36 +295,8 @@ export default {
         const response = await api.get(`/articles/${slug}`)
         this.article = response.data
 
-        // Correction des chemins d'images
-        if (this.article.cover_image) {
-          // Si l'image commence par / mais pas par http
-          if (
-            this.article.cover_image.startsWith('/') &&
-            !this.article.cover_image.startsWith('http')
-          ) {
-            // Assurez-vous que baseUrl n'a pas de slash à la fin
-            const baseUrl = this.baseUrl.endsWith('/') ? this.baseUrl.slice(0, -1) : this.baseUrl
-            this.article.cover_image = `${baseUrl}${this.article.cover_image}`
-          }
-          // Si l'image ne commence pas par / et pas par http
-          else if (
-            !this.article.cover_image.startsWith('/') &&
-            !this.article.cover_image.startsWith('http')
-          ) {
-            const baseUrl = this.baseUrl.endsWith('/') ? this.baseUrl : `${this.baseUrl}/`
-            this.article.cover_image = `${baseUrl}${this.article.cover_image}`
-          }
-        }
-
-        // Ajouter des logs pour debug
-        console.log('URL de base:', this.baseUrl)
-        console.log('Chemin image final:', this.article.cover_image)
-
-        // Vérifiez si des images sont présentes dans le contenu et corrigez leurs chemins
-        if (this.article.content && this.isMarkdown) {
-          // Corrigez les chemins des images dans le contenu markdown
-          this.article.content = this.fixImagePathsInMarkdown(this.article.content)
-        }
+        // Traitement des images avec validation améliorée
+        this.processArticleImages()
       } catch (error) {
         console.error("Erreur lors de la récupération de l'article depuis l'API:", error)
         this.error = "Impossible de charger l'article depuis l'API. Affichage des données locales."
@@ -290,10 +305,8 @@ export default {
         const fallbackArticle = articlesData.find((a) => a.slug === this.$route.params.slug)
         if (fallbackArticle) {
           this.article = fallbackArticle
-          // Si l'image est présente dans le JSON, ajuste son chemin si nécessaire
-          if (this.article.cover_image && !this.article.cover_image.startsWith('http')) {
-            this.article.cover_image = `/images/${this.article.cover_image}` // Ajuste selon ton dossier public
-          }
+          // Si l'image est présente dans le JSON, ajuste son chemin
+          this.processArticleImages()
         } else {
           this.article = null
           this.error = 'Article non trouvé, même dans les données locales.'
@@ -302,27 +315,59 @@ export default {
         this.isLoading = false
       }
     },
-    // Fonction pour corriger les chemins d'images dans le contenu markdown
+    // Méthode unifiée pour traiter les images
+    processArticleImages() {
+      if (!this.article) return
+
+      // Traiter l'image de couverture
+      if (this.article.cover_image) {
+        this.article.cover_image = this.fixImagePath(this.article.cover_image)
+      }
+
+      // Traiter les images dans le contenu markdown
+      if (this.article.content && this.isMarkdown) {
+        this.article.content = this.fixImagePathsInMarkdown(this.article.content)
+      }
+    },
+    // Méthode pour corriger le chemin d'une image individuelle
+    fixImagePath(path) {
+      if (!path) return ''
+
+      // Si c'est déjà une URL complète, on ne touche à rien
+      if (path.startsWith('http') || path.startsWith('data:')) {
+        return path
+      }
+
+      // Sinon, on construit le chemin complet
+      if (path.startsWith('/')) {
+        const baseUrl = this.baseUrl.endsWith('/') ? this.baseUrl.slice(0, -1) : this.baseUrl
+        return `${baseUrl}${path}`
+      } else {
+        const baseUrl = this.baseUrl.endsWith('/') ? this.baseUrl : `${this.baseUrl}/`
+        return `${baseUrl}${path}`
+      }
+    },
+    // Fonction améliorée pour corriger les chemins d'images dans le contenu markdown
     fixImagePathsInMarkdown(content) {
       // Détecte les références d'images markdown ![alt](path) et les corrige
       const imgRegex = /!\[([^\]]*)\]\(([^)]+)\)/g
       return content.replace(imgRegex, (match, alt, path) => {
-        if (path.startsWith('http')) {
-          return match // Déjà une URL absolue, ne rien changer
-        }
-
-        // Construire le chemin correct pour l'image
-        let fixedPath = path
-        if (path.startsWith('/')) {
-          const baseUrl = this.baseUrl.endsWith('/') ? this.baseUrl.slice(0, -1) : this.baseUrl
-          fixedPath = `${baseUrl}${path}`
-        } else {
-          const baseUrl = this.baseUrl.endsWith('/') ? this.baseUrl : `${this.baseUrl}/`
-          fixedPath = `${baseUrl}${path}`
-        }
-
+        const fixedPath = this.fixImagePath(path)
         return `![${alt}](${fixedPath})`
       })
+    },
+    // Gestion des erreurs d'image
+    handleImageError(event) {
+      // Remplacer par l'image par défaut en cas d'échec de chargement
+      event.target.src = this.imageFallbackUrl
+    },
+    // Appliquer highlight.js à tous les blocs de code après le rendu
+    applyCodeHighlighting() {
+      if (this.isMarkdown) {
+        document.querySelectorAll('pre code').forEach((block) => {
+          hljs.highlightElement(block)
+        })
+      }
     },
     formatDate(date) {
       return new Date(date).toLocaleDateString('fr-FR', {
@@ -463,35 +508,50 @@ export default {
   border-radius: 0.375rem;
   padding: 1rem;
   overflow-x: auto;
+  margin: 1.5em 0;
 }
 
 .prose code {
   background-color: rgba(30, 41, 59, 0.6);
   border-radius: 0.25rem;
   padding: 0.125rem 0.25rem;
-  font-family: ui-monospace, monospace;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.9em;
 }
 
 .prose pre code {
   background-color: transparent;
   padding: 0;
+  color: #e5e7eb;
+  font-size: 0.9em;
+  line-height: 1.6;
 }
 
 .prose blockquote {
   border-left: 4px solid #38bdf8;
-  padding-left: 1rem;
+  padding: 0.5rem 0 0.5rem 1rem;
+  margin: 1.5rem 0;
   font-style: italic;
+  color: #94a3b8;
+  background-color: rgba(30, 41, 59, 0.3);
+  border-radius: 0 0.25rem 0.25rem 0;
 }
 
 .prose img {
   border-radius: 0.375rem;
   max-width: 100%;
   height: auto;
+  display: block;
+  margin: 1.5rem auto;
+  box-shadow:
+    0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06);
 }
 
 .prose a {
   color: #38bdf8;
   text-decoration: none;
+  transition: text-decoration 0.15s ease;
 }
 
 .prose a:hover {
@@ -501,6 +561,9 @@ export default {
 .prose table {
   width: 100%;
   border-collapse: collapse;
+  margin: 1.5rem 0;
+  overflow-x: auto;
+  display: block;
 }
 
 .prose thead {
@@ -509,11 +572,84 @@ export default {
 
 .prose th,
 .prose td {
-  padding: 0.5rem;
+  padding: 0.75rem;
   border: 1px solid rgba(148, 163, 184, 0.2);
+  text-align: left;
 }
 
 .prose tr:nth-child(even) {
   background-color: rgba(30, 41, 59, 0.2);
+}
+
+/* Améliorations pour les listes */
+.prose ul,
+.prose ol {
+  padding-left: 1.5rem;
+  margin: 1rem 0;
+}
+
+.prose li {
+  margin-bottom: 0.5rem;
+}
+
+.prose ul {
+  list-style-type: disc;
+}
+
+.prose ol {
+  list-style-type: decimal;
+}
+
+/* Améliorations pour les titres */
+.prose h1,
+.prose h2,
+.prose h3,
+.prose h4,
+.prose h5,
+.prose h6 {
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+  font-weight: 600;
+  line-height: 1.25;
+}
+
+.prose h1 {
+  font-size: 2em;
+}
+
+.prose h2 {
+  font-size: 1.5em;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.2);
+}
+
+.prose h3 {
+  font-size: 1.25em;
+}
+
+.prose h4 {
+  font-size: 1em;
+}
+
+/* Styles pour la coloration syntaxique des blocs de code */
+.hljs {
+  background: transparent;
+}
+
+/* Animation pour les images lors du chargement */
+.prose img {
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.prose img.loaded {
+  opacity: 1;
+}
+
+/* Style pour les liens dans les blocs de code */
+.prose pre a {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-style: dotted;
 }
 </style>
