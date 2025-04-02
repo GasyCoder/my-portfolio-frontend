@@ -1,7 +1,7 @@
 <template>
   <div id="app" class="bg-gradient-to-br from-laravel-dark via-vue-dark to-tailwind-blue/80">
     <!-- Éléments décoratifs de fond -->
-    <div class="fixed top-0 left-0 w-full h-full overflow-hidden pointer-events-none z-0">
+    <div class="fixed top-0 left-0 z-0 w-full h-full overflow-hidden pointer-events-none">
       <!-- Logo Vue.js stylisé -->
       <div class="absolute top-10 right-10 opacity-10">
         <svg
@@ -52,13 +52,13 @@
 
       <!-- Cercles décoratifs dans les couleurs des technologies -->
       <div
-        class="absolute top-0 right-0 w-96 h-96 bg-vue-green rounded-full mix-blend-multiply filter blur-3xl opacity-5 animate-blob"
+        class="absolute top-0 right-0 rounded-full w-96 h-96 bg-vue-green mix-blend-multiply filter blur-3xl opacity-5 animate-blob"
       ></div>
       <div
-        class="absolute top-1/3 -left-20 w-72 h-72 bg-laravel-red rounded-full mix-blend-multiply filter blur-3xl opacity-5 animate-blob animation-delay-2000"
+        class="absolute rounded-full top-1/3 -left-20 w-72 h-72 bg-laravel-red mix-blend-multiply filter blur-3xl opacity-5 animate-blob animation-delay-2000"
       ></div>
       <div
-        class="absolute bottom-0 right-1/4 w-80 h-80 bg-tailwind-blue rounded-full mix-blend-multiply filter blur-3xl opacity-5 animate-blob animation-delay-4000"
+        class="absolute bottom-0 rounded-full right-1/4 w-80 h-80 bg-tailwind-blue mix-blend-multiply filter blur-3xl opacity-5 animate-blob animation-delay-4000"
       ></div>
     </div>
 
@@ -73,13 +73,13 @@
 
     <!-- Barre de statut multitech -->
     <div
-      class="fixed bottom-0 left-0 w-full h-6 bg-gray-900 opacity-95 z-20 flex items-center justify-between px-4 text-xs text-white font-mono"
+      class="fixed bottom-0 left-0 z-20 flex items-center justify-between w-full h-6 px-4 font-mono text-xs text-white bg-gray-900 opacity-95"
     >
       <div class="flex items-center space-x-2">
-        <span class="inline-block w-2 h-2 rounded-full bg-vue-green mr-1"></span>
-        <span class="inline-block w-2 h-2 rounded-full bg-laravel-red mr-1"></span>
-        <span class="inline-block w-2 h-2 rounded-full bg-tailwind-blue mr-1"></span>
-        <span>@bezaraflorent</span>
+        <span class="inline-block w-2 h-2 mr-1 rounded-full bg-vue-green"></span>
+        <span class="inline-block w-2 h-2 mr-1 rounded-full bg-laravel-red"></span>
+        <span class="inline-block w-2 h-2 mr-1 rounded-full bg-tailwind-blue"></span>
+        <span>@beflorent</span>
       </div>
       <div class="flex items-center space-x-4">
         <span class="text-laravel-red">Laravel</span>
