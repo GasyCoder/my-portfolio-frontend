@@ -71,12 +71,12 @@
             </div>
 
             <!-- Description si elle existe, sinon contenu avec effet de gradient subtil sur le texte -->
-            <div 
-              v-if="article.description" 
+            <div
+              v-if="article.description"
               class="mt-3 leading-relaxed text-color-text-medium line-clamp-3 prose-preview"
               v-html="renderContent(article.description)"
             ></div>
-            <div 
+            <div
               v-else
               class="mt-3 leading-relaxed text-color-text-medium line-clamp-3 prose-preview"
               v-html="renderContent(article.content)"
@@ -225,7 +225,7 @@ export default {
           contentText.includes(query) ||
           descriptionText.includes(query) ||
           (article.category || '').toLowerCase().includes(query) ||
-          (article.tags ? article.tags.some(tag => tag.toLowerCase().includes(query)) : false)
+          (article.tags ? article.tags.some((tag) => tag.toLowerCase().includes(query)) : false)
         )
       })
     },
@@ -244,32 +244,32 @@ export default {
   methods: {
     // Détecter si un contenu est en Markdown
     isMarkdown(content) {
-      if (!content) return false;
-      
+      if (!content) return false
+
       // Détecter les motifs markdown courants
       const markdownPatterns = [
-        /^#\s+/m,               // Titre h1
-        /^##\s+/m,              // Titre h2
-        /^###\s+/m,             // Titre h3
-        /^>/m,                  // Citation
-        /^-\s+/m,               // Liste à puces
-        /^[0-9]+\.\s+/m,        // Liste numérotée
-        /\[.+\]\(.+\)/,         // Lien
-        /!\[.+\]\(.+\)/,        // Image
-        /^```[\s\S]+```$/m,     // Bloc de code
-        /\*\*.+\*\*/,           // Gras
-        /\*.+\*/,               // Italique
-        /~~.+~~/,               // Barré
-        /^---$/m                // Ligne horizontale
+        /^#\s+/m, // Titre h1
+        /^##\s+/m, // Titre h2
+        /^###\s+/m, // Titre h3
+        /^>/m, // Citation
+        /^-\s+/m, // Liste à puces
+        /^[0-9]+\.\s+/m, // Liste numérotée
+        /\[.+\]\(.+\)/, // Lien
+        /!\[.+\]\(.+\)/, // Image
+        /^```[\s\S]+```$/m, // Bloc de code
+        /\*\*.+\*\*/, // Gras
+        /\*.+\*/, // Italique
+        /~~.+~~/, // Barré
+        /^---$/m, // Ligne horizontale
       ]
-      
-      return markdownPatterns.some(pattern => pattern.test(content))
+
+      return markdownPatterns.some((pattern) => pattern.test(content))
     },
-    
+
     // Méthode pour rendre le contenu (HTML ou Markdown)
     renderContent(content) {
-      if (!content) return '';
-      
+      if (!content) return ''
+
       // Vérifier si le contenu est en markdown
       if (this.isMarkdown(content)) {
         // Configuration de marked pour le texte mais sans image
@@ -277,64 +277,65 @@ export default {
           gfm: true,
           breaks: true,
           smartLists: true,
-          smartypants: true
-        });
-        
+          smartypants: true,
+        })
+
         try {
           // Convertir le markdown en HTML
-          let htmlContent = marked.parse(content);
-          
+          let htmlContent = marked.parse(content)
+
           // Supprimer les balises img pour n'afficher que le texte
-          htmlContent = htmlContent.replace(/<img[^>]*>/g, '');
-          
-          return htmlContent;
+          htmlContent = htmlContent.replace(/<img[^>]*>/g, '')
+
+          return htmlContent
         } catch (error) {
-          console.error('Erreur lors du rendu markdown:', error);
-          return content;
+          console.error('Erreur lors du rendu markdown:', error)
+          return content
         }
       }
-      
+
       // Si ce n'est pas du markdown, retourner le contenu tel quel
-      return content;
+      return content
     },
-    
+
     stripHtml(html) {
-      if (!html) return '';
-      const temp = document.createElement('div');
-      temp.innerHTML = html;
-      return temp.textContent || temp.innerText || '';
+      if (!html) return ''
+      const temp = document.createElement('div')
+      temp.innerHTML = html
+      return temp.textContent || temp.innerText || ''
     },
-    
+
     async fetchArticles() {
       try {
-        this.isLoading = true;
-        this.error = null;
+        this.isLoading = true
+        this.error = null
 
         // Tentative de récupération des articles via l'API
-        const response = await api.get('/articles');
-        this.articles = response.data;
+        const response = await api.get('/articles')
+        this.articles = response.data
       } catch (error) {
-        console.error("Erreur lors de la récupération des articles depuis l'API:", error);
-        this.error = "Impossible de charger les articles depuis l'API. Affichage des données locales.";
+        console.error("Erreur lors de la récupération des articles depuis l'API:", error)
+        this.error =
+          "Impossible de charger les articles depuis l'API. Affichage des données locales."
 
         // En cas d'erreur, utilise les données statiques de articles.json
-        this.articles = articlesData;
+        this.articles = articlesData
       } finally {
-        this.isLoading = false;
+        this.isLoading = false
       }
     },
-    
+
     formatDate(date) {
-      if (!date) return '';
+      if (!date) return ''
       return new Date(date).toLocaleDateString('fr-FR', {
         day: 'numeric',
         month: 'long',
         year: 'numeric',
-      });
+      })
     },
     getCategoryBadgeClass(category) {
-      if (!category) return 'bg-gray-700/30 text-gray-300 border border-gray-600';
-      
+      if (!category) return 'bg-gray-700/30 text-gray-300 border border-gray-600'
+
       const categoryMap = {
         LARAVEL: 'laravel-badge',
         VUE: 'vue-badge',
@@ -346,14 +347,14 @@ export default {
         WORDPRESS: 'bg-indigo-500/20 text-indigo-300 border border-indigo-600/30',
         'SIDE PROJECTS': 'bg-purple-500/20 text-purple-300 border border-purple-600/30',
         LIFE: 'bg-teal-500/20 text-teal-300 border border-teal-600/30',
-      };
-      const upperCategory = category.toUpperCase();
-      return categoryMap[upperCategory] || 'bg-gray-700/30 text-gray-300 border border-gray-600';
+      }
+      const upperCategory = category.toUpperCase()
+      return categoryMap[upperCategory] || 'bg-gray-700/30 text-gray-300 border border-gray-600'
     },
     getArticleButtonClass(category) {
-      if (!category) return 'bg-gray-700 hover:bg-gray-600 text-white';
-      
-      const upperCategory = category.toUpperCase();
+      if (!category) return 'bg-gray-700 hover:bg-gray-600 text-white'
+
+      const upperCategory = category.toUpperCase()
       const buttonClasses = {
         LARAVEL: 'bg-red-700/80 hover:bg-red-600/80 text-white border-red-500/30',
         VUE: 'bg-green-700/80 hover:bg-green-600/80 text-white border-green-500/30',
@@ -361,27 +362,27 @@ export default {
         PHP: 'bg-purple-700/80 hover:bg-purple-600/80 text-white border-purple-500/30',
         JAVASCRIPT: 'bg-yellow-700/80 hover:bg-yellow-600/80 text-white border-yellow-500/30',
         TYPESCRIPT: 'bg-blue-700/80 hover:bg-blue-600/80 text-white border-blue-500/30',
-      };
-      return buttonClasses[upperCategory] || 'bg-gray-700 hover:bg-gray-600 text-white';
+      }
+      return buttonClasses[upperCategory] || 'bg-gray-700 hover:bg-gray-600 text-white'
     },
     handleSearch() {
-      this.currentPage = 1;
+      this.currentPage = 1
     },
     prevPage() {
       if (this.currentPage > 1) {
-        this.currentPage--;
+        this.currentPage--
       }
     },
     nextPage() {
       if (this.currentPage < this.totalPages) {
-        this.currentPage++;
+        this.currentPage++
       }
     },
     goToPage(page) {
-      this.currentPage = page;
+      this.currentPage = page
     },
   },
-};
+}
 </script>
 
 <style scoped>
